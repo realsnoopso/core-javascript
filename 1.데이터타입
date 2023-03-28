@@ -1,0 +1,265 @@
+# 데이터 타입의 종류
+## 기본형
+- Primitive type
+- Number, String, Boolean, Null, Undefined, Symbol
+- 기본형은 불변성을 띄고 있음
+## 참조형
+- Reference type
+- Array, Function, Date, Regexp, Map, WeekMap, Set, WeakSet
+
+# 메모리와 데이터
+- 1바이트는 8비트로 구성
+- 1바이트는 총 256개의 값을 표현 가능
+- 메모리 용량이 과거보다 월등히 커진 상태에서 등장한 자바스크립트는 메모리 관리에 대한 압박에서 자유로움
+- 숫자의 경우 8바이트 확보
+
+# 식별자와 변수
+- 변수와 식별자는 다른 것
+- 변수: 데이터 그 자체
+- 식별자: 변수명
+
+# 변수 선언과 할당
+0. 메모리에서 변수 영역과 데이터 영역은 구분된다.
+1. 변수 영역에서 빈 공간(1003)을 확보한다.
+2. 확보한 공간의 식별자를 a로 지정한다.
+3. 데이터 영역의 빈공간(5004)에 문자열 abc를 저장
+4. 변수 영역에서 a라는 식별자를 검색한다. 값이 5004에 저장되어 있는 것을 확인
+5. 5004번에 찾아가서 데이터를 찾아낸다.
+
+- 이렇게 선언과 할당이 다른 데이터를 사용하는 이유는 데이터 변환을 자유롭게 할 수 있으면서도 메모리를 효율적을 관리하기 위함
+- 숫자형은 8비트의 공간을 확보하지만, 문자는 특별히 정해진 규격이 없음.
+- 또한 중복된 데이터를 효율적으로 사용할 때도 유리. 모든 변수에 5를 할당해야 한다고 가정해보면, 데이터 공간은 1개만 확보해도 됨.
+
+# 불변값
+- 변수와 상수를 구분하는 성질은 변경 가능성
+- 불변값과 상수는 다른 의미. 
+- 상수: 한 번 데이터 할당이 이뤄진 `변수 공간`에 다른 데이터를 재할당할 수 없음
+- 불변값: 한 번 데이터 할당이 이뤄진 `데이터 영역`에 다른 데이터를 재할당할 수 없음
+- 숫자, 문자열... 등 기본 데이터는 모두 불변값.
+
+```javascript
+var a = 'abc';
+a = a + 'def'; // 변수에 다른 데이터를 저장한다. 변수 공간에 재할당하는 것
+
+var b = 5;
+var c = 5; // 4번쨰 줄에서 만든 데이터 5가 있으니, c에서는 5라는 데이터를 찾아 할당한다. 
+b = 7; // 데이터 7이 있는지 확인, 없으니 7 데이터를 만들어서 b 공간에 할당
+```
+- 즉, 5, 7 모두 데이터 영역에는 다른 데이터를 재할당할 수 없음.
+- 한번 만들어진 값은 가비지 컬렉팅을 당하지 않는 한 영원히 변하지 않음
+
+# 가변값
+- 참조형 데이터는 기본적인 성질은 가변값이나 설정에 따라 변경 불가능하거나 아예 불변값으로 활용하는 상황도 있음
+```javascript
+var obj1 = {
+  a: 1,
+  b: 'bbb'
+}
+```
+![IMG_1BDE9B3467A1-1](https://user-images.githubusercontent.com/96381221/228216956-66092c4e-d41e-4ccd-86ae-623d27e0ba55.jpeg)
+
+1. 변수 영역 1002에 obj1을 할당한다.
+2. 객체 5001의 변수 영역에 a와 b를 할당한다
+3. 데이터 영역에 1과 'bbb'를 각각 저장한다.
+
+- 기본형 데이터와의 차이는 `객체의 변수 영역`이 별도로 존재한다는 점
+- a에 재할당하면 obj1은 변하지 않았으므로 새로운 객체가 만들어진 게 아니라 기존 객체의 내부 값만 바뀜
+
+```javascript
+var obj = {
+  x: 3,
+  arr: [3, 4, 5]
+}
+```
+
+- 만약 위 같은 상태에서 재할당 명령을 내리면 어떻게 될까?
+- obj.arr = 'str';
+- 새로운 데이터 영역에 'str'을 저장하고 그 주소를 arr의 변수 영역에 저장
+- 기존 arr에 연결되어 있던 데이터들은 참조 카운트 (자신의 주소를 참조하는 변수의 개수) 가 0이 된다.
+- 참조 카운트가 0이 되면 가비지 컬렉터가 수거해간다.
+- 가비지 컬렉터는 런타임 환경에 따라 특정 시점이나 메모리 사용량이 포화 상태에 임박할 때마다 자동으로 수거 대상을 수거함
+
+# 변수 복사 비교
+```javascript
+var a = 10;
+var b = a;
+
+var obj1 = { c: 10, d: 'ddd'};
+var obj2 = obj1;
+```
+
+- a 변수 영역에 저장, 10을 데이터 영역에 저장. 데이터 영역 주소를 a 변수 영역에 저장
+- b 변수 영역을 새로 만들고 a를 검색해 a 영역을 조회, 데이터 영역의 주소를 b 변수 영역에 대입한다.
+- obj 변수 영역 확보, 데이터 영역 확보. 별도의 변수 영역 확보. 데이터 영역 확보 후 각 변수마다 데이터 대입
+- ojb2 변수 영역 확보. obj1을 검색해 그 값을 데이터 영역에 대입.
+- 복사하면 기본형과 참조형 데이터 모두 같은 주소를 바라보게 된다는 점은 동일. 
+- 하지만 데이터를 변경하게 되면 기본형 데이터는 바라보는 데이터가 변경되는 반면, 참조형 데이터는 변하지 않음. 
+
+![IMG_8135E88F0C30-1](https://user-images.githubusercontent.com/96381221/228220928-10c23a9e-b09a-4f71-a921-e78087ddc676.jpeg)
+
+```javascript
+a !== b
+obj1 === obj2
+```
+- 결국 기본형도 주솟값을 참조하기는 한다. 
+- 하지만 기본형은 주솟값 복사가 한번만 이루어지고, 참조형은 한 단계 더 이뤄짐.
+
+```javascript
+var a = 10;
+var b = a;
+var obj1 = { c: 10, d: 'ddd'};
+var obj2 = obj1
+
+b = 15
+obj2 = { c: 20, d: 'ddd' };
+```
+
+- 만약 위와 같이 오브젝트 리터럴에 값을 재할당한다면? 참조 데이터가 당연히 변함.
+- 참조형 데이터가 가변값이라고 설명할 때의 가변은 참조형 데이터 자체를 변경할 경우가 아니라 그 내부의 프로퍼티 변경시에만 성립한다.
+
+# 불변 객체
+- 참조형 데이터의 '가변'은 데이터 자체가 아닌 내부 프로퍼티 변경에는 성립
+- 값으로 전달받은 객체에 변경을 가하더라도 원본 객체는 변하면 안되는 경우가 있다.
+
+```javascript
+var user = {
+    name: 'Jaenam',
+    gender: 'male'
+}
+
+var changeName = function (user, newName) {
+  var newUser = user;
+  newUser.name = newName;
+  return newUser;
+}
+// 위와 같은 경우 newUser의 변수가 user의 데이터 영역을 바라보게 됨
+// 그 이후 해당 데이터에 할당을 하게 되면 원본 값이 변경되게 됨
+
+var changeName = function (user, newName) {
+  return {
+    name: newName,
+    gender: user.gender
+  }
+}
+
+// 위의 경우에는 기존 객체의 값을 가져와서 새로운 객체에 넣는 것이므로 문제 없음
+
+var user2 = changeName(user, 'Jung')
+```
+
+```javascript
+var user = {
+    name: 'Jaenam',
+    gender: 'male'
+}
+
+var copyObject = function (target) {
+  var result = {};
+  for (var prop in target) {
+    result[prop] = target[prop];
+  }
+  return result;
+}
+
+
+```
+- 위와 같이 result 객체에 target 객체의 프로퍼티를 복사하는 함수를 만들어보기
+- 이렇게 작성했을 경우 불변 객체라고 할 수 있다. 하지만 이것은 바로 아래 단계의 값만 복사하는 얕은 복사
+- immutable.js 나 baobab.js가 이런 맥락에서 나온 라이브러리
+
+# 얕은 복사와 깊은 복사
+- 얕은 복사: 바로 아래 단계의 값만 복사하는 것
+- 깊은 복사: 내부의 값을 하나하나 찾아서 전부 복사하는 것
+
+```
+var user = {
+  name: 'Jaenam',
+  urls: {
+    portfolio: 'http://.....',
+    blog: 'http://....',
+    facebook: 'http://....'
+  }
+}
+
+var use2 = copyObject(user);
+
+user2.name = 'Jung';
+
+console.log(user.name === user2.name); // false;
+
+user.url.porfolio = 'http....';
+console.log(user.urls.portfolio === user2.urls.portfolio); //true
+```
+
+- 한 단계 더 들어가면 복사가 안되는 현상
+
+```
+var user2 = copyObject(user);
+user2.urls = copyObject(user.urls);
+
+user.url.porfolio = 'http...'
+```
+- 이렇게 한번 더 복사를 해주면 해결.
+- 즉, 기본형 데이터의 경우에는 그대로 복사하면 되지만 참조형 데이터는 다시 그 내부의 프로퍼티를 복사해야 한다. 즉, 재귀적으로 해결해야 함.
+
+```javascript
+var copyObjectDeep = function(target) {
+  var result = {};
+  if (typeof target === 'object' && target !== null) {
+    for (var prop in target) {
+      result[prop] = copyObjectDeep(target[prop]);
+    }
+  } else {
+    result = target;
+  }
+  return result;
+}
+```
+
+```javascript
+var copyObjectViaJSON = function (target) {
+  return JSON.parse(JSON.stringfy(target));
+}
+```
+
+# undefined과 null
+- undefined: 주로 자바스크립트 엔진이 자동으로 부여함
+- 자바스크립트는 사용자가 응당 어떤 값을 지정할 것이라고 예상하는 상황임에도 실제로 하지 않았을때 undefined를 반환함
+  1. 값을 대입하지 않은 변수일 때
+  2. 객체 내부의 존재하지 않은 프로퍼티에 접근할 때
+  3. return이 없는 함수의 실행 결과
+- 비어있는 요소(empty)와 undefined 은 다름
+- 비어있는 요소는 순회에서 제외된다.
+
+```javascript
+var arr1 = [undefined, 1];
+var arr2 = [];
+arr2[1] = 1;
+
+arr1.forEach(function(v,i) {console.log(v)}); // undefined 0 / 1 1
+arr2.forEach(function(v,i) {console.log(v)}); // 1 1
+
+arr1.map(function(v, i) {return v+i}); // [NaN, 2]
+arr2.map(function(v, i) {return v+i}); // [empty, 2]
+
+arr1.filter(function(v) {return !v;}); // [undefined]
+arr2.filter(function(v) {return !v;}); // []
+
+arr1.reduce(function (p, c, i) {return p+c+i;},'') //undefined011
+arr1.reduce(function (p, c, i) {return p+c+i;},'') //11
+```
+
+- empty의 경우 처리를 하지 않고 건너뛰는 현상들이 발생한다 (forEach, filter, reduce)
+- 배열도 객체임을 생각해보면 존재하지 않은 프로퍼티에 대해서는 순회할 수 없는 것이 당연함
+- 배열도 객ㄱ체와 마찬가지로 특정 인덱스에 값을 지정할 때 비로소 빈 공간을 확보하기 시작
+- 값이 지정되지 않은 프로퍼티는 아직은 존재하지 않는 것이라고 볼 수 있음
+- undefined는 비록 비어있음을 의미하긴 하지만 하나의 값으로 동작함.
+- 즉, 프로퍼티나 배열의 요소는 고유의 키값이 실존하게 됨, 따라서 순회의 대상이 됨.
+- 직접 값이 없음을 할당할 때는 null로 두는 것이 좋음. 그래야 자바스크립트 엔진이 반환하는 것과 구별지을 수 있음.
+
+- 추가로 주의사항은 typeof null은 object 이며 이는 자바스크립트 버그임.
+- null == undefined // true, null === undefined // false
+
+# 문제
+- [ ] 변수에 데이터가 할당되는 과정을 설명하시오.
+- [ ] 불변 객체를 만드는 방법에 대해서 설명하시오.
