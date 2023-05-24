@@ -1,14 +1,11 @@
-setTimeout(function () {
-  console.log(this);
-}, 300); // (1) 전역
+var Person = function (name) {
+  this._name = name;
+};
+Person.prototype.getName = function () {
+  return this._name;
+};
 
-[1, 2, 3, 4, 5].forEach(function (x) {
-  // (2) 전역
-  console.log(this, x);
-});
+var suzi = new Person('Suzi');
+suzi.__proto__.getName(); // undefined
 
-document.body.innerHTML += '<button id="a">클릭</button>';
-document.body.querySelector('#a').addEventListener('click', function (e) {
-  // (3)
-  console.log(this, e);
-});
+Person.prototype === suzi.__proto__; // true
